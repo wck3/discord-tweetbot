@@ -18,6 +18,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+
+
 async def find_tweet(url):
     #get html data from the url
     res = session.get(url)
@@ -35,7 +37,7 @@ async def find_tweet(url):
             regex = re.compile('.·')
             time = [i for i in time_tags if not regex.match(i)]
             # only save the tweet link if the tweet is less than an hour old
-            
+    
             if 'hour' in time[0] and int(time[0][0]) == 1 and time[0][1] == ' ' or 'mins' in time[0]:
                 link = div.find("a")
                 links.add( link['href'] )
@@ -46,9 +48,15 @@ async def send_array_contents(array):
     # channel I want to send the link to
     channel = bot.get_channel(1126904064119152771) 
     # send each scraped link to the discord channel
-    for item in array:
-        print(item)
-        await channel.send(item)
+    # check if the message has already been sent (avoids duplicates when resetting bot)
+    async for message in channel.history(limit=1):
+        prev_link = message.content
+    for link in array:
+        if link != prev_link:
+            print(link)
+            await channel.send(link)
+        else:
+            print("Duplicate link. Trying Again in 30 minutes.")
 
 # wrapper function to find the links and send to the discord server
 async def message():
@@ -56,15 +64,15 @@ async def message():
     if(len(links) > 0):
         await send_array_contents(links)
     else:
-        print("No links found, trying again in 1 hour.")
+        print("No links found, trying again in 30 minutes.")
         
 @bot.event
 async def on_ready():
     print("bot logged in")
-    # loop the search indefinitely in 1 hour intervals
+    # loop the search indefinitely in 30 minute intervals
     while not bot.is_closed():
         await message()
-        await asyncio.sleep(3600) 
+        await asyncio.sleep(1200) 
 
 # start the bot
 bot.run(os.getenv('DISCORD_TOKEN'))
