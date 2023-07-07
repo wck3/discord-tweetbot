@@ -35,7 +35,8 @@ async def find_tweet(url):
             regex = re.compile('.·')
             time = [i for i in time_tags if not regex.match(i)]
             # only save the tweet link if the tweet is less than an hour old
-            if 'hour' in time[0] and int(time[0][0]) > 1 or 'mins' in time[0]:
+            
+            if 'hour' in time[0] and int(time[0][0]) >= 1 and time[0][1] is ' ' or 'mins' in time[0]:
                 link = div.find("a")
                 links.add( link['href'] )
     return links
@@ -46,11 +47,12 @@ async def send_array_contents(array):
     channel = bot.get_channel(1126904064119152771) 
     # send each scraped link to the discord channel
     for item in array:
+        print(item)
         await channel.send(item)
 
 # wrapper function to find the links and send to the discord server
 async def message():
-    links = await find_tweet('https://www.google.com/search?q=bungiehelp')
+    links = await find_tweet('https://www.google.com/search?q=bungiehelp+twitter')
     await send_array_contents(links)
         
 @bot.event
