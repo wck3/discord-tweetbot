@@ -7,47 +7,48 @@ import re
 from discord.ext import commands
 import asyncio
 
-
+# used to retreieve bot token from .env file
 load_dotenv()
-# initialize an HTTP session
+
+# initialize an HTTP session to scrape data
 session = HTMLSession()
 
+# Create an instance of the bot
 intents = discord.Intents.default()
 intents.message_content = True
-
-# Create an instance of the bot
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 async def find_tweet(url):
-    
+    #get html data from the url
     res = session.get(url)
     soup = BeautifulSoup(res.html.html, "html.parser")
     
     links = set()
+    # scrape divs with same class as the twitter links
     divs = (soup.find_all('div', {"class":"fy7gGf"}))
     for div in divs:
+        # isolate divs with the twitter links in them
         if div.find("a", {"class":"h4kbcd"}):
-            #paragraphs = [p.text for p in soup.find_all('p')]
+            # retrieve the time posted from the divs
             time_tags = [d.text for d in div.find_all("span", {"class":"f"})]
+            #remove · character from the time list (it shares the same class as the time)
             regex = re.compile('.·')
-            #remove · character from time list, this is the only way I could think to remove it
             time = [i for i in time_tags if not regex.match(i)]
-            #if 'hour' in time[0] and int(time[0][0]) > 1 or 'mins' in time[0]:
-            if 'day' in time[0] and int(time[0][0]) >= 1 or 'mins' in time[0]:
-                #times.append(time[0])
+            # only save the tweet link if the tweet is less than an hour old
+            if 'hour' in time[0] and int(time[0][0]) > 1 or 'mins' in time[0]:
                 link = div.find("a")
                 links.add( link['href'] )
-    #pprint(list(links))
     return links
     
 @bot.command(pass_context=True)
 async def send_array_contents(array):
+    # channel I want to send the link to
     channel = bot.get_channel(1126904064119152771) 
-  
+    # send each scraped link to the discord channel
     for item in array:
-        print(item)
-        #await channel.send(item)
+        await channel.send(item)
 
+# wrapper function to find the links and send to the discord server
 async def message():
     links = await find_tweet('https://www.google.com/search?q=bungiehelp')
     await send_array_contents(links)
@@ -55,8 +56,11 @@ async def message():
 @bot.event
 async def on_ready():
     print("bot logged in")
+    # loop the search indefinitely in 1 hour intervals
     while not bot.is_closed():
-        await message()  # Run the Bot
-        await asyncio.sleep(3600) # Wait 1 hour to check for new tweets
+        await message()
+        await asyncio.sleep(3600) 
 
+# start the bot
 bot.run(os.getenv('DISCORD_TOKEN'))
+
