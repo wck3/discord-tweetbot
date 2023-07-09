@@ -18,9 +18,10 @@ This seems unreliable, and that's because it is! If google changes how they disp
 ## How to Use
 
 1. You must [create a discord bot](https://www.ionos.com/digitalguide/server/know-how/creating-discord-bot/)
-2. Create a .env file in the same directory as the python script. You must copy the bot token into the file in the format\
-   DISCORD_TOKEN = 'YOUR-TOKEN-HERE'
-3. Run the Python script and enjoy!
+2. Create a .env file in the same directory as the python script. You must copy the bot token and [channel ID](https://docs.statbot.net/docs/faq/general/how-find-id/#:~:text=To%20get%20a%20Channel%20ID,the%20number%20is%20the%20ID.) into the file in the format\
+   DISCORD_TOKEN = 'YOUR-TOKEN-HERE'\
+   CHANNEL_ID = 'ID-HERE'
+4. Run the Python script and enjoy!
 
 **NOTE:** If you change the Google search URL to a different Twitter account, make sure the search leads to a search that has the 3 tweet cards shown in the screenshot above
 
