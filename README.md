@@ -7,7 +7,7 @@ The bot is written in Python. Using the requests_html library the bot navigates 
 If the time since posting is under 2 hours, the bot saves the links in a list. This list is compared with past messages in the destination text channel in the Discord server. If the url has not been send to the server in the past, the bot will post the url in the channel. This process occurs every 30 minutes, and the bot is designed to run 24/7.
 
 ### Why I did it this way
-This seems unreliable, and that's because it is! If google changes how they display tweets, this bot will become useless. My original goal was to use the Twitter API to fetch the new tweets which would have made the process much simpler. However, the free tier no longer allows for reading other users tweets. Since I cannot afford the $100 dollar a month subscription to the API, I had no choice but to scrape the urls. I almost gave up on the project after discovering this, but I knew there had to be a way, no matter how janky!
+This seems unreliable, and that's because it is! If google changes how they display tweets, this bot will become useless. My original goal was to use the Twitter API to fetch the new tweets which would have made the process much simpler. However, the free tier no longer allows for reading other users tweets. Since I cannot afford the 100 dollar a month subscription to the API, I had no choice but to scrape the urls. I almost gave up on the project after discovering this, but I knew there had to be a way, no matter how janky!
 
 ## Requirements
 - Python 3.11
