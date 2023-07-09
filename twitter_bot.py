@@ -46,28 +46,27 @@ async def find_tweet(url):
              
 @bot.command(pass_context=True)
 async def send_array_contents(array):
+
     # channel I want to send the link to
-    channel = bot.get_channel(1126904064119152771) 
-    
+    channel = bot.get_channel(int(os.getenv('CHANNEL_ID')))
     # check if the message has already been sent (avoids duplicates when resetting bot)
     async for message in channel.history(limit=1):
         prev_link = message.content
-    
     for link in array:
         if link != prev_link:
-            print(link)
             await channel.send(link)
         else:
-            print("Duplicate link. Trying Again in 30 minutes.")
+            print("Duplicate tweet found. Trying Again in 30 minutes.")
 
 # function to find the links and send them to the discord server
 async def message():
+    # CHANGE GOOGLE SEARCH HERE
     links = await find_tweet('https://www.google.com/search?q=bungiehelp+twitter')
-    print(links)
+   
     if(len(links) > 0):
         await send_array_contents(links)
     else:
-        print("No links found, trying again in 30 minutes.")
+        print("No tweets found, trying again in 30 minutes.")
         
 @bot.event
 async def on_ready():
